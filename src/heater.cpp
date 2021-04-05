@@ -20,10 +20,10 @@ void heater::StartHeating()
     {
         _WL.Incr_Temp(val,change_val);
         std::cout << "Heating the Room\n";
-        c.SetColor(8, Color::YELLOW);
+        c.SetColor(4, Color::YELLOW);
         if(_WL._tempValue >= 24)
         {
-            c.SetColor(8, Color::RED);
+            c.SetColor(4, Color::RED);
         }
         std::unique_lock<std::mutex> ene_lck(ene_mtx);
         ene_cond.wait(ene_lck, [this] (){return _EL._energy > 0;});

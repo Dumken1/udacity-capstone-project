@@ -27,10 +27,8 @@ void light::simulate(){
         // compute time difference to stop watch
             long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate).count();
             if (timeSinceLastUpdate >= cycleDuration){
-                std::unique_lock<std::mutex> lck(mtx);
                 if (Timeflag == false){LightControl(state::ON);}
                 else {LightControl(state::OFF);}
-                lck.unlock();
             }
             lastUpdate = std::chrono::system_clock::now();
         }
@@ -40,25 +38,28 @@ void light::simulate(){
 state light::LightControl(state l_control){
     if (l_control == state::OFF)
     {
-        _L.SetColor(4, Color::WHITE);
+        _L.SetColor(2, Color::WHITE);
         _Light_State = state::OFF;
+        std::unique_lock<std::mutex> lck(g_mtx);
         std::cout << "light off\n";
+        lck.unlock();
         return _Light_State;
     }
     else{
-        _L.SetColor(4, Color::ORANGE);
+        _L.SetColor(2, Color::ORANGE);
         _Light_State = state::ON;
         std::unique_lock<std::mutex> ene_lck(ene_mtx);
         ene_cond.wait(ene_lck, [this] (){return _EL._energy > 0;});
         if(Timeflag == false){
             _EL._energy -= _light_consump;  
             _EL.PrintEnergy();
+            std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Energy Reduced\n";
+            lck.unlock();
         }
         ene_lck.unlock();
         ene_cond.notify_all();
 
-        //_EL.CheckEnergy(_light_consump);
         std::cout << "light on\n";
         return _Light_State;
     }

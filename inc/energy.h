@@ -6,9 +6,6 @@
 
 extern std::mutex ene_mtx;
 extern std::condition_variable ene_cond;
-extern unsigned int g_energylevel;
-
-
 
 class energy
 {
@@ -25,8 +22,6 @@ public:
     void PrintEnergy();
     void EnergySimulate();
     unsigned int GetEnergy();
-    bool CheckEnergy(int value);
-    void SetEnergy(int value);
     void SupplyEnergy();
 };
 

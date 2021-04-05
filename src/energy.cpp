@@ -6,7 +6,7 @@ std::condition_variable ene_cond;
 
 energy::energy(background &e): _e{e}
 {
-    e.SetColor(6, Color::RED);
+    e.SetColor(3, Color::RED);
 }
 
 energy::~energy()
@@ -21,48 +21,26 @@ unsigned int energy::GetEnergy(){
 }
 
 void energy::PrintEnergy(){
+    std::unique_lock<std::mutex> lck(g_mtx);
     std::cout << /*GetEnergy*/_energy << "KWS" << std::endl;
 }
 
-void energy::SetEnergy(int e_value){
-    _energy = e_value;
-    std::cout << "Energy Set to "  << /*GetEnergy*/_energy << "KWS" << std::endl;
-    _e.SetColor(6, Color::GREEN);
-}
-
 void energy::SupplyEnergy(){
-    _e.SetColor(6, Color::GREEN);
+    _e.SetColor(3, Color::GREEN);
     std::unique_lock<std::mutex> ene_lck(ene_mtx);
     ene_cond.wait(ene_lck, [this] (){return this->_energy < 250;});
     if(Timeflag == true){
         _energy += 10;
         PrintEnergy();
-        _e.SetColor(6, Color::YELLOW);
+        _e.SetColor(3, Color::YELLOW);
+        std::unique_lock<std::mutex> lck(g_mtx);
         std::cout << "Energy Supplied" << std::endl;
+        lck.unlock();
     }
     ene_lck.unlock();
     ene_cond.notify_all();
-    /*else
-    {
-        std::cout << "Enter Energy Value: ";
-        int temp_eval = 0;
-        std::cin >> temp_eval;
-        SetEnergy(temp_eval);
-    }*/
 }
 
-bool energy::CheckEnergy(int value){
-    std::unique_lock<std::mutex> ene_lck(ene_mtx);
-    ene_cond.wait(ene_lck, [this] (){return this->_energy > 0;});
-    if(Timeflag==false){
-        _energy -= value;  
-        PrintEnergy();
-        std::cout << "Energy Reduced\n";
-    }
-    ene_lck.unlock();
-    ene_cond.notify_one();
-    return true; 
-}
 
 void energy::EnergySimulate(){
     while (true)

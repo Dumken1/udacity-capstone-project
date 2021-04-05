@@ -6,17 +6,17 @@
 
 enum state{OFF, ON, ERROR};
 
-class light
+class Light
 {
 private:
     state _Light_State = state::ERROR; 
-    background &_L;
-    energy &_EL;
+    Background &_Obackground;
+    Energy &_Oenergy;
     const unsigned int _light_consump = 2;
-    
+
 public:
-    light(background &l, energy &o_EL);
-    ~light();
+    Light(Background &background, Energy &energy);
+    ~Light();
     void simulate();
     state LightControl(state l_control);
 };

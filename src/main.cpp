@@ -12,16 +12,16 @@
 
 int main() {
     unsigned int weather_simulation;
-    std::shared_ptr<background> me{std::make_shared<background>()};
+    std::shared_ptr<Background> me{std::make_shared<Background>()};
     me->points_init();
 
     lock(*me);
-    std::thread th1(&background::BackgroundSimulate, me);
+    std::thread th1(&Background::BackgroundSimulate, me);
 
-    energy e_me(*me);
-    light l_me(*me, e_me);
-    weather w_me(*me, e_me);
-    heater h_me(*me, e_me, w_me);
+    Energy e_me(*me);
+    Light l_me(*me, e_me);
+    Weather w_me(*me, e_me);
+    Heater h_me(*me, e_me, w_me);
     
     while (true)
     {
@@ -39,7 +39,8 @@ int main() {
             me->BackgroundSimulate();
         }
 
-        if(weather_simulation == 1){
+        if(weather_simulation == 1)
+        {
             w_me._weather_state = w_state::SNOW;
             unlock(*me);
             break;
@@ -58,11 +59,11 @@ int main() {
         }
     }
 
-    std::thread th2(&energy::EnergySimulate, e_me);
-    std::thread th3(&light::simulate, l_me);
-    std::thread th4(&background::TimeofDaySimulation, me);
-    std::thread th5(&weather::simulate, w_me);
-    std::thread th6(&heater::Simulate, h_me);
+    std::thread th2(&Energy::simulate, e_me);
+    std::thread th3(&Light::simulate, l_me);
+    std::thread th4(&Background::TimeofDaySimulation, me);
+    std::thread th5(&Weather::simulate, w_me);
+    std::thread th6(&Heater::Simulate, h_me);
 
     while(1){  
         me->BackgroundSimulate();  

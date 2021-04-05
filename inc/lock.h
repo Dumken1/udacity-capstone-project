@@ -4,8 +4,8 @@
 #include <iostream>
 #include "graphics.h"
 
-void unlock(background& a);
-void lock(background& a);
+void unlock(Background& background);
+void lock(Background& background);
 
 
 #endif // !_LOCK_H_

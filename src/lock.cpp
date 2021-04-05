@@ -1,17 +1,16 @@
 #include "lock.h"
 #include <vector>
 
-unsigned int password;
 
-void unlock(background& a){
+void unlock(Background& background){
     for (size_t i = 0; i < 5; i++)
     {
-        a.SetColor(i, Color::GREEN);
+        background.SetColor(i, Color::GREEN);
     }
 }
-void lock(background& a){
+void lock(Background& backgound){
     for (size_t i = 0; i < 5; i++)
     {
-        a.SetColor(i, Color::RED);
+        backgound.SetColor(i, Color::RED);
     }
 }

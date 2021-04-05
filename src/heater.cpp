@@ -1,41 +1,42 @@
 #include "heater.h"
 
 
-heater::heater(background &e, energy &o_EL, weather &o_WL): c{e}, _EL{o_EL}, _WL{o_WL}
+Heater::Heater(Background &background, Energy &energy, Weather &weather): 
+                        _Obackground{background}, _Oenergy{energy}, _Oweather{weather}
 {
     std::cout << "Heating instantiated\n";
 }
 
-heater::~heater()
+Heater::~Heater()
 {
 
 
 }
 
-void heater::StartHeating()
+void Heater::StartHeating()
 {
     int val = 25;
     unsigned int change_val = 1;
-    if (_WL._weather_state == w_state::SNOW)
+    if (_Oweather._weather_state == w_state::SNOW)
     {
-        _WL.Incr_Temp(val,change_val);
+        _Oweather.Incr_Temp(val,change_val);
         std::cout << "Heating the Room\n";
-        c.SetColor(4, Color::YELLOW);
-        if(_WL._tempValue >= 24)
+        _Obackground.SetColor(4, Color::YELLOW);
+        if(_Oweather._tempValue >= 24)
         {
-            c.SetColor(4, Color::RED);
+            _Obackground.SetColor(4, Color::RED);
         }
         std::unique_lock<std::mutex> ene_lck(ene_mtx);
-        ene_cond.wait(ene_lck, [this] (){return _EL._energy > 0;});
-        _EL._energy -= heater_consumption;  
+        ene_cond.wait(ene_lck, [this] (){return _Oenergy._energy > 0;});
+        _Oenergy._energy -= heater_consumption;  
         std::cout << "Energy Reduced from Weather\n";
-        _EL.PrintEnergy();
+        _Oenergy.PrintEnergy();
         ene_lck.unlock();
         ene_cond.notify_all();
     }
 }
 
-void heater::Simulate(){
+void Heater::Simulate(){
         std::chrono::time_point<std::chrono::system_clock> lastUpdate;
     double cycleDuration = 1;
 

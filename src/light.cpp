@@ -3,17 +3,17 @@
 #include "graphics.h"
 #include "energy.h"
 
-light::light(background &l, energy &o_EL): _L{l}, _EL{o_EL}
+Light::Light(Background &background, Energy &energy): _Obackground{background}, _Oenergy{energy}
 {
-    std::cout << "Light instantiated" << "\n";
+    _Obackground.SetColor(2, Color::RED);
 }
 
-light::~light()
+Light::~Light()
 {
 
 }
 
-void light::simulate(){
+void Light::simulate(){
     while (true)
     {
         std::chrono::time_point<std::chrono::system_clock> lastUpdate;
@@ -35,10 +35,11 @@ void light::simulate(){
     }   
 }
 
-state light::LightControl(state l_control){
+
+state Light::LightControl(state l_control){
     if (l_control == state::OFF)
     {
-        _L.SetColor(2, Color::WHITE);
+        _Obackground.SetColor(2, Color::WHITE);
         _Light_State = state::OFF;
         std::unique_lock<std::mutex> lck(g_mtx);
         std::cout << "light off\n";
@@ -46,13 +47,13 @@ state light::LightControl(state l_control){
         return _Light_State;
     }
     else{
-        _L.SetColor(2, Color::ORANGE);
+        _Obackground.SetColor(2, Color::ORANGE);
         _Light_State = state::ON;
         std::unique_lock<std::mutex> ene_lck(ene_mtx);
-        ene_cond.wait(ene_lck, [this] (){return _EL._energy > 0;});
+        ene_cond.wait(ene_lck, [this] (){return _Oenergy._energy > 0;});
         if(Timeflag == false){
-            _EL._energy -= _light_consump;  
-            _EL.PrintEnergy();
+            _Oenergy._energy -= _light_consump;  
+            _Oenergy.PrintEnergy();
             std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Energy Reduced\n";
             lck.unlock();

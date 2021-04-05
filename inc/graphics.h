@@ -12,25 +12,24 @@
 #include <opencv2/highgui/highgui.hpp>
 
 
-extern bool Timeflag;
+extern bool Timeflag; 
 extern std::mutex g_mtx;
-
 
 enum class Color {RED, GREEN, ORANGE, WHITE, YELLOW, BLACK};
 
-class background{ 
+class Background{ 
     public:
         void BackgroundSimulate();
         void points_init();
         void SetColor(int loc, Color color);
-        background& operator=(const background &RHS);
-        uint32_t TimeofDaySimulation();
+        Background& operator=(const Background &RHS);
+        void TimeofDaySimulation();
 
     private:
         cv::Mat _image;
         std::string _home_image = "/home/dumken/Documents/udacity_capstone_project/home_pics.png";
         std::vector<std::vector<cv::Point>> _points;
-        std::vector<cv::Scalar> _colour{0,0,0,0,0,0,0,0,0};
+        std::vector<cv::Scalar> _colour{0,0,0,0,0};
         std::mutex _mtx;
 };
 

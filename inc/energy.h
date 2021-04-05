@@ -4,23 +4,25 @@
 #include <condition_variable>
 #include "graphics.h"
 
-extern std::mutex ene_mtx;
+
+/* mutex to control Energy consumption  relationship 
+Producer-comsumer relationship with 
+light and heater */
+extern std::mutex ene_mtx; 
 extern std::condition_variable ene_cond;
 
-class energy
+class Energy
 {
 private:
-    background &_e;
-    bool solar;   
+    Background &_background; 
 public:
     static unsigned int _energy;
 
-    energy(background &e);
-    ~energy();
-    //energy& operator=(const energy &RHS);
+    Energy(Background &background);
+    ~Energy();
 
     void PrintEnergy();
-    void EnergySimulate();
+    void simulate();
     unsigned int GetEnergy();
     void SupplyEnergy();
 };

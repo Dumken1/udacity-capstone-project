@@ -7,19 +7,19 @@
 std::mutex wea_mtx;
 std::condition_variable wea_cond;
 
-unsigned int weather::_tempValue{15};
-w_state weather::_weather_state;
+unsigned int Weather::_tempValue{15};
+w_state Weather::_weather_state;
 
-weather::weather(background &b, energy &o_EL): c{b}, _EL{o_EL}
+Weather::Weather(Background &background, Energy &energy): _Obackground{background}, _Oenergy{energy}
 {
-    c.SetColor(1, Color::ORANGE);
+    _Obackground.SetColor(1, Color::RED);
 }
 
-weather::~weather(){
+Weather::~Weather(){
 
 }
 
-bool weather::Incr_Temp(unsigned int value, unsigned int incr_val){
+bool Weather::Incr_Temp(unsigned int value, unsigned int incr_val){
     std::unique_lock<std::mutex> wea_lck(wea_mtx);
     if (_tempValue < value)
     {
@@ -29,7 +29,7 @@ bool weather::Incr_Temp(unsigned int value, unsigned int incr_val){
     return false;
 }
 
-bool weather::Decr_Temp(unsigned int value, unsigned int decr_val){
+bool Weather::Decr_Temp(unsigned int value, unsigned int decr_val){
     std::unique_lock<std::mutex> wea_lck(wea_mtx);
     if (_tempValue > value)
     {
@@ -39,21 +39,21 @@ bool weather::Decr_Temp(unsigned int value, unsigned int decr_val){
     return false;
 }
 
-void weather::print(){
+void Weather::print(){
     std::unique_lock<std::mutex> lck(g_mtx);
     std::cout << "Temperature value is " << _tempValue << "\n";
 }
 
-void weather::update(){
+void Weather::update(){
         if(get_Temp() < 24){
-            c.SetColor(0, Color::GREEN);
+            _Obackground.SetColor(0, Color::GREEN);
         }
         if(get_Temp() >= 24){
-            c.SetColor(0, Color::RED);
+            _Obackground.SetColor(0, Color::RED);
         }
 }
 
-void weather::change(){
+void Weather::change(){
     if (_weather_state == w_state::RAIN)
     {
         unsigned int val = 15;
@@ -62,21 +62,21 @@ void weather::change(){
             std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Temperature decreased\n";
             lck.unlock();
-            c.SetColor(1, Color::GREEN);
+            _Obackground.SetColor(1, Color::GREEN);
             print();
         }
     }
     
     else if (_weather_state == w_state::SNOW)
     {
-        c.SetColor(1, Color::WHITE);
+        _Obackground.SetColor(1, Color::WHITE);
         int val = 0;
         unsigned int change_val = 1;
         if(Decr_Temp(val, change_val)){
             std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Temperature decreased\n";
             lck.unlock();
-            c.SetColor(1, Color::WHITE);
+            _Obackground.SetColor(1, Color::WHITE);
             print();
         } 
     }
@@ -88,21 +88,21 @@ void weather::change(){
             std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Temperature Increased\n";
             lck.unlock();
-            c.SetColor(1, Color::ORANGE);
+            _Obackground.SetColor(1, Color::ORANGE);
             print();
         } 
         else if (Incr_Temp(val, change_val) == false && Timeflag == false)
         {
-            c.SetColor(1, Color::BLACK);
+            _Obackground.SetColor(1, Color::BLACK);
         }
         else{
-            c.SetColor(1, Color::ORANGE);
+            _Obackground.SetColor(1, Color::ORANGE);
         }
     }
-    weather::update();
+    Weather::update();
 }
 
-void weather::simulate(){  // thread to simulate weather effect
+void Weather::simulate(){  // thread to simulate weather 
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
     double cycleDuration = 1;
 

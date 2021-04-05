@@ -10,19 +10,19 @@ enum w_state{SUN, SNOW, RAIN};
 extern std::mutex wea_mtx;
 extern std::condition_variable wea_cond;
 
-class weather
+class Weather
 {
 private:
-    background &c;
-    energy &_EL;
+    Background &_Obackground;
+    Energy &_Oenergy;
     const unsigned int _temp_consumption = 4;
     
 public:
     static unsigned int _tempValue;
     static w_state _weather_state;
 
-    weather(background &b, energy &o_EL);
-    ~weather();
+    Weather(Background &background, Energy &energy);
+    ~Weather();
     bool Incr_Temp(unsigned int value, unsigned int incr_val);
     bool Decr_Temp(unsigned int value, unsigned int decr_val);
     void update();

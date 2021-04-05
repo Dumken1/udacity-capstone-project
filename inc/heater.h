@@ -6,17 +6,17 @@
 #include "energy.h"
 #include "weather.h"
 
-class heater
+class Heater
 {
 private:
-    background &c;
-    energy &_EL;
-    weather &_WL;
+    Background &_Obackground;
+    Energy &_Oenergy;
+    Weather &_Oweather;
     unsigned int heater_consumption = 10;
 
 public:
-    heater(background &e, energy &o_EL, weather &o_WL);
-    ~heater();
+    Heater(Background &background, Energy &energy, Weather &weather);
+    ~Heater();
     void StartHeating();
     void Simulate();
 };

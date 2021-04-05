@@ -6,10 +6,14 @@
 
 #include "graphics.h"
 
-bool Timeflag = true;
-std::mutex g_mtx;
+// Global time used to simulate the time change
+bool Timeflag = true; 
 
-void background::BackgroundSimulate(){  
+std::mutex g_mtx; // used to lock the console display output
+
+
+//Display Background image
+void Background::BackgroundSimulate(){  
     _image = cv::imread(_home_image, cv::IMREAD_COLOR);
 
     for (size_t i = 0; i < _points.size(); i++){
@@ -35,7 +39,7 @@ void background::BackgroundSimulate(){
 }
 
 
-void background::SetColor(int loc, Color color){
+void Background::SetColor(int loc, Color color){
     std::unique_lock<std::mutex> lck(_mtx);
     if(color == Color::RED)    {_colour.at(loc)  = cv::Scalar(0, 0, 255);}
     if(color == Color::GREEN)  {_colour.at(loc)  = cv::Scalar(110, 220, 0);}
@@ -45,7 +49,7 @@ void background::SetColor(int loc, Color color){
     if(color == Color::BLACK)  {_colour.at(loc)  = cv::Scalar(0, 0, 0);}
 }
 
-background& background::operator=(const background &RHS)
+Background& Background::operator=(const Background &RHS)
 {
     // do the copy
     _colour = RHS._colour;
@@ -55,8 +59,9 @@ background& background::operator=(const background &RHS)
     return *this;
 }
 
-void background::points_init(){
-    
+
+// Set the shape points in the image
+void Background::points_init(){  
     std::vector<cv::Point> TEMPSENSOR_shape_points;
     TEMPSENSOR_shape_points.push_back(cv::Point(326, 507));
     TEMPSENSOR_shape_points.push_back(cv::Point(406, 507));
@@ -88,7 +93,8 @@ void background::points_init(){
     _points.push_back(HEATER_shape_points);
 }
 
-uint32_t background::TimeofDaySimulation(){
+
+void Background::TimeofDaySimulation(){
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
     double cycleDuration = 1;
     int timetracker = 0;
@@ -96,7 +102,7 @@ uint32_t background::TimeofDaySimulation(){
      lastUpdate = std::chrono::system_clock::now();
     while (true)
     {
-        // sleep at every iteration to reduce CPU usage
+
         std::this_thread::sleep_for(std::chrono::seconds(1));
         // compute time difference to stop watch
         long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate).count();
@@ -105,11 +111,14 @@ uint32_t background::TimeofDaySimulation(){
             std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Time:     " << timetracker << std::endl;
             lck.unlock();
-            if (timetracker < 24){timetracker++;}
+
+            if (timetracker < 24){timetracker++;} 
             else
             {
                 timetracker = 0;
             }
+
+            //Simulating night effect
             if(timetracker > 18 && timetracker < 24){
                 std::unique_lock<std::mutex> lck(g_mtx);
                 std::cout << "It is night\n";

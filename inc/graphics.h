@@ -27,7 +27,7 @@ class Background{
 
     private:
         cv::Mat _image;
-        std::string _home_image = "/home/dumken/Documents/udacity_capstone_project/home_pics.png";
+        std::string _home_image = "../home_pics.png";
         std::vector<std::vector<cv::Point>> _points;
         std::vector<cv::Scalar> _colour{0,0,0,0,0};
         std::mutex _mtx;

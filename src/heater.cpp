@@ -4,7 +4,7 @@
 Heater::Heater(Background &background, Energy &energy, Weather &weather): 
                         _Obackground{background}, _Oenergy{energy}, _Oweather{weather}
 {
-    std::cout << "Heating instantiated\n";
+    _Obackground.SetColor(4, Color::RED);
 }
 
 Heater::~Heater()

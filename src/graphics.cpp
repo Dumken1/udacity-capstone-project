@@ -119,7 +119,7 @@ void Background::TimeofDaySimulation(){
             }
 
             //Simulating night effect
-            if(timetracker > 18 && timetracker < 24){
+            if((timetracker >= 18 && timetracker <= 24)){
                 std::unique_lock<std::mutex> lck(g_mtx);
                 std::cout << "It is night\n";
                 lck.unlock();

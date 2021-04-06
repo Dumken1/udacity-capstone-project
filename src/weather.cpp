@@ -19,7 +19,7 @@ Weather::~Weather(){
 
 }
 
-bool Weather::Incr_Temp(unsigned int value, unsigned int incr_val){
+bool Weather::Incr_Temp(const unsigned int value, const unsigned int incr_val){
     std::unique_lock<std::mutex> wea_lck(wea_mtx);
     if (_tempValue < value)
     {
@@ -56,8 +56,8 @@ void Weather::update(){
 void Weather::change(){
     if (_weather_state == w_state::RAIN)
     {
-        unsigned int val = 15;
-        unsigned int change_val = 1;
+        constexpr unsigned int val = 15;
+        constexpr unsigned int change_val = 1;
         if(Decr_Temp(val, change_val)){
             std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Temperature decreased\n";
@@ -70,8 +70,8 @@ void Weather::change(){
     else if (_weather_state == w_state::SNOW)
     {
         _Obackground.SetColor(1, Color::WHITE);
-        int val = 0;
-        unsigned int change_val = 1;
+        constexpr unsigned int val = 0;
+        constexpr unsigned int change_val = 1;
         if(Decr_Temp(val, change_val)){
             std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Temperature decreased\n";
@@ -82,21 +82,28 @@ void Weather::change(){
     }
     else
     {
-        int val = 30;
-        unsigned int change_val = 1;
-        if(Incr_Temp(val, change_val)){
+        constexpr unsigned int val = 30;
+        constexpr unsigned int change_val = 1;
+        if(Incr_Temp(val, change_val) && Timeflag){
             std::unique_lock<std::mutex> lck(g_mtx);
             std::cout << "Temperature Increased\n";
             lck.unlock();
             _Obackground.SetColor(1, Color::ORANGE);
             print();
         } 
-        else if (Incr_Temp(val, change_val) == false && Timeflag == false)
+        else if (Incr_Temp(val, change_val) && !Timeflag)
         {
             _Obackground.SetColor(1, Color::BLACK);
+            std::cout << "first\n";
+        }
+        else if (!Incr_Temp(val, change_val) && !Timeflag)
+        {
+            _Obackground.SetColor(1, Color::BLACK);
+            std::cout << "second\n";
         }
         else{
             _Obackground.SetColor(1, Color::ORANGE);
+            std::cout << "here\n";
         }
     }
     Weather::update();

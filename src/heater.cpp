@@ -13,7 +13,7 @@ Heater::~Heater()
 
 }
 
-void Heater::StartHeating()
+void Heater::StartHeating(unsigned int heater_consum)
 {
     int val = 25;
     unsigned int change_val = 1;
@@ -28,7 +28,7 @@ void Heater::StartHeating()
         }
         std::unique_lock<std::mutex> ene_lck(ene_mtx);
         ene_cond.wait(ene_lck, [this] (){return _Oenergy._energy > 0;});
-        _Oenergy._energy -= heater_consumption;  
+        _Oenergy._energy -= heater_consum;  
         std::cout << "Energy Reduced from Weather\n";
         _Oenergy.PrintEnergy();
         ene_lck.unlock();
@@ -50,7 +50,7 @@ void Heater::Simulate(){
         long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate).count();
         if (timeSinceLastUpdate >= cycleDuration)
         {   
-            StartHeating();
+            StartHeating(heater_consumption);
         }
 
         lastUpdate = std::chrono::system_clock::now();

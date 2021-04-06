@@ -23,8 +23,8 @@ public:
 
     Weather(Background &background, Energy &energy);
     ~Weather();
-    bool Incr_Temp(unsigned int value, unsigned int incr_val);
-    bool Decr_Temp(unsigned int value, unsigned int decr_val);
+    bool Incr_Temp(const unsigned int conditionvalue, const unsigned int incr_val);
+    bool Decr_Temp(const unsigned int conditionvalue, const unsigned int decr_val);
     void update();
     void print();
     void change();

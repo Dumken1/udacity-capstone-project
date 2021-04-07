@@ -12,9 +12,9 @@ The code compiled without any issues on the following versions
     - For installation procedure used for opencv use [OpenCV Installation](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html)
 - gcc/g++ version: 9.3.0
 
-**Note:** TThe OpenCV Installation procedure also explains how cmake and the gnu toolchain dependencies for the project can be installed.
+**Note:** The OpenCV Installation procedure also explains how cmake and the gnu toolchain dependencies for the project can be installed.
 
-# Poject Build Instruction
+# Project Build Instruction
 1. Clone this repository
 2. Create a build Directory using: ```mkdir build && cd build ```
 3. Compile with ``` cmake .. && make```
@@ -54,7 +54,7 @@ The code compiled without any issues on the following versions
 
 ## Simulation procedure
 
-Wrong option keeps you at the prompt instruction till correct option is entered. If wrong option is entered, the objects blick a red color. If correct, then a green color flashes at all objects implemented after a red one. Then the code starts simulating the entered option.
+Wrong option keeps you at the prompt instruction till correct option is entered. If wrong option is entered, the objects blick a red color. If correct, then a green color flashes at all object indicator and then the code starts simulating the entered option.
 
 ## Effects.
 Effects of the display can be read from what is being displayed on the console.
@@ -115,4 +115,4 @@ The constructors of each file was used to initialize the different colours at st
 **Disclaimer**:
 
 1. This Project was not implemented to time precision but just to display understanding of C++ concepts.
-2. Picture used was gotten from [this website](https:://freedesignfile.com/?cat=1&s=Smart+home)
+2. Picture used was gotten from [this website](https://freedesignfile.com/?cat=1&s=Smart+home)

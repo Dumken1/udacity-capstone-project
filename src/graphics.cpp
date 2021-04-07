@@ -16,8 +16,14 @@ std::mutex g_mtx; // used to lock the console display output
 void Background::BackgroundSimulate(){  
     _image = cv::imread(_home_image, cv::IMREAD_COLOR);
 
-    for (size_t i = 0; i < _points.size(); i++){
-        cv::fillPoly(_image, _points.at(i), _colour.at(i), 8);
+    for (size_t i = 0; i < _points.size(); ++i){
+      
+       std::vector<cv::Point> tmp = _points.at(i);
+       const cv::Point* P_element[1] = { &tmp[0] };
+       int npt = (int)tmp.size(); 
+      
+       cv::fillPoly(_image, P_element, &npt, 1, _colour.at(i), 8);
+
     }
 
     if (_image.empty()){

@@ -16,7 +16,8 @@ int main() {
     I_background->points_init();
 
     lock(*I_background);
-    std::thread th1(&Background::BackgroundSimulate, I_background);
+    I_background->BackgroundSimulate();
+    
 
     Energy IEnergy(*I_background);
     Light ILight(*I_background, IEnergy);
@@ -26,6 +27,8 @@ int main() {
     while (true)
     {
         while (!(std::cin) || weather_simulation < 1 || weather_simulation > 3) {
+            lock(*I_background);
+            I_background->BackgroundSimulate();
             std::cout << "Please enter 1 for Snow.\n";
             std::cout << "Please enter 2 for Rain.\n";
             std::cout << "Please enter 3 for SUN.\n";
@@ -35,8 +38,6 @@ int main() {
 
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            lock(*I_background);
-            I_background->BackgroundSimulate();
         }
 
         if(weather_simulation == 1)
@@ -59,11 +60,11 @@ int main() {
         }
     }
 
-    std::thread th2(&Energy::simulate, IEnergy);
-    std::thread th3(&Light::simulate, ILight);
-    std::thread th4(&Background::TimeofDaySimulation, I_background);
-    std::thread th5(&Weather::simulate, Iweather);
-    std::thread th6(&Heater::Simulate, IHeater);
+    std::thread th1(&Energy::simulate, IEnergy);
+    std::thread th2(&Light::simulate, ILight);
+    std::thread th3(&Background::TimeofDaySimulation, I_background);
+    std::thread th4(&Weather::simulate, Iweather);
+    std::thread th5(&Heater::Simulate, IHeater);
 
     //main loop simulates the background
     while(1){  
@@ -71,12 +72,12 @@ int main() {
     } 
     
 
+
     th1.join();
     th2.join();
     th3.join();
     th4.join();
     th5.join();
-    th6.join();
 
     return 0;
 }
